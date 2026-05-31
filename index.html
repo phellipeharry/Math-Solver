@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MathFlow - Solucionador Inteligente e Plotador de Gráficos</title>
+  
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Desenhe equações na tela, resolva com inteligência artificial passo a passo e plote gráficos cartesianos interativos instantaneamente com o Math Solver.">
+  <meta name="keywords" content="matematica, ocr matematica, plotador de graficos, plano cartesiano, calculadora cientifica, gemini, katex">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <!-- KaTeX CSS for beautiful math equations -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="style.css">
+  
+  <!-- Load MathJS for local calculation and formula parsing -->
+  <script src="https://cdn.jsdelivr.net/npm/mathjs@11.8.0/lib/browser/math.js"></script>
+  
+  <!-- Load KaTeX JS -->
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  
+  <!-- Load Function Plot (requires D3, which is bundled in jsDelivr) -->
+  <script src="https://cdn.jsdelivr.net/npm/function-plot@1.24.0/dist/function-plot.js"></script>
+</head>
+<body>
+
+  <!-- Header -->
+  <header>
+    <div class="logo-area">
+      <div class="logo-icon">
+        <i class="fa-solid fa-square-root-variable"></i>
+      </div>
+      <div>
+        <h1 class="logo-title">Math Solver</h1>
+      </div>
+    </div>
+    <div class="nav-actions">
+      <button id="btn-open-settings" class="btn" title="Configurar chave do Gemini">
+        <i class="fa-solid fa-gear"></i>
+        <span>API Key</span>
+      </button>
+      <button id="btn-help" class="btn" title="Ajuda / Como Usar">
+        <i class="fa-solid fa-circle-question"></i>
+        <span>Como Usar</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Grid Layout -->
+  <main class="dashboard-grid">
+    
+    <!-- PANEL 1: DRAWING CANVAS -->
+    <section class="panel-card" id="panel-drawing">
+      <div class="panel-header">
+        <h2 class="panel-title">
+          <i class="fa-solid fa-signature"></i>
+          <span>Desenho na Tela</span>
+        </h2>
+        <div class="toolbar-group">
+          <button id="btn-expand-canvas" class="btn btn-icon-only" title="Expandir/Recolher Tela">
+            <i class="fa-solid fa-expand" id="expand-icon"></i>
+          </button>
+          <button id="btn-toggle-eraser" class="btn btn-icon-only" title="Alternar Borracha">
+            <i class="fa-solid fa-eraser"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div class="canvas-container" id="canvas-container">
+        <canvas id="drawing-canvas"></canvas>
+      </div>
+      
+      <div class="canvas-toolbar">
+        <div class="toolbar-group">
+          <button id="btn-undo" class="btn btn-icon-only" title="Desfazer">
+            <i class="fa-solid fa-arrow-rotate-left"></i>
+          </button>
+          <button id="btn-redo" class="btn btn-icon-only" title="Refazer">
+            <i class="fa-solid fa-arrow-rotate-right"></i>
+          </button>
+          <button id="btn-clear" class="btn btn-danger btn-icon-only" title="Limpar Tudo">
+            <i class="fa-solid fa-trash-can"></i>
+          </button>
+        </div>
+        
+        <div class="brush-size-control">
+          <i class="fa-solid fa-paint-brush"></i>
+          <input type="range" id="brush-size" min="2" max="20" value="4" title="Tamanho do Pincel">
+        </div>
+      </div>
+      
+      <button id="btn-recognize" class="btn btn-primary" style="margin-top: auto; justify-content: center; height: 48px;">
+        <i class="fa-solid fa-wand-magic-sparkles"></i>
+        <span>Reconhecer & Resolver</span>
+      </button>
+    </section>
+
+    <!-- PANEL 2: RECOGNITION & SOLUTION -->
+    <section class="panel-card" id="panel-solution">
+      <div class="panel-header">
+        <h2 class="panel-title">
+          <i class="fa-solid fa-brain"></i>
+          <span>Resolução e LaTeX</span>
+        </h2>
+      </div>
+
+      <!-- LaTeX Visual Output -->
+      <div class="result-field">
+        <div class="latex-display" id="latex-output">
+          <span style="color: var(--text-muted); font-size: 0.95rem;">
+            A fórmula desenhada ou digitada aparecerá aqui.
+          </span>
+        </div>
+      </div>
+
+      <!-- Manual input for adjustments -->
+      <div class="form-group">
+        <label for="formula-input-edit">Editar Fórmula Manualmente</label>
+        <div class="edit-formula-group">
+          <input type="text" id="formula-input-edit" class="formula-input" placeholder="Ex: x^2 + 2x - 3 = 0 ou sin(x)">
+          <button id="btn-solve-edited" class="btn btn-primary" title="Resolver entrada manual">
+            <i class="fa-solid fa-calculator"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- Final Result Badge -->
+      <div id="final-result-container" style="display: none;">
+        <div class="final-result-badge">
+          <i class="fa-solid fa-square-check"></i>
+          <span>Resultado: <strong id="final-result-value">0</strong></span>
+        </div>
+      </div>
+
+      <!-- Step-by-step list -->
+      <h3 style="font-size: 1rem; font-weight: 600; margin-top: 0.5rem; color: var(--text-bright);">
+        <i class="fa-solid fa-list-ol" style="color: var(--accent-cyan); margin-right: 0.5rem;"></i>Passo a Passo
+      </h3>
+      
+      <div class="steps-container" id="steps-container">
+        <div class="empty-state">
+          <i class="fa-solid fa-arrow-left-long"></i>
+          <p>Desenhe algo e clique em Reconhecer para ver a resolução detalhada por IA.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PANEL 3: CARTESIAN PLOTTER -->
+    <section class="panel-card" id="panel-graph">
+      <div class="panel-header">
+        <h2 class="panel-title">
+          <i class="fa-solid fa-chart-line"></i>
+          <span>Plano Cartesiano</span>
+        </h2>
+        <div class="toolbar-group">
+          <span id="coord-tracker" style="font-size: 0.85rem; color: var(--text-muted); font-family: 'Fira Code', monospace;">
+            x: 0.00, y: 0.00
+          </span>
+        </div>
+      </div>
+
+      <!-- Plot Area -->
+      <div class="graph-wrapper" id="graph-container">
+        <div id="plot-area" style="width: 100%; height: 100%;"></div>
+      </div>
+
+      <!-- Graph Quick Controls -->
+      <div class="graph-controls">
+        <button id="btn-zoom-in" class="btn btn-icon-only" title="Aumentar Zoom">
+          <i class="fa-solid fa-magnifying-glass-plus"></i>
+        </button>
+        <button id="btn-zoom-out" class="btn btn-icon-only" title="Diminuir Zoom">
+          <i class="fa-solid fa-magnifying-glass-minus"></i>
+        </button>
+        <button id="btn-zoom-reset" class="btn" title="Resetar Visualização">
+          <i class="fa-solid fa-arrows-to-dot"></i>
+          <span>Resetar</span>
+        </button>
+        <button id="btn-toggle-axes" class="btn tool-active" title="Ativar/Desativar Eixos X e Y">
+          <i class="fa-solid fa-arrows-up-down-left-right"></i>
+          <span>Eixos</span>
+        </button>
+      </div>
+
+      <!-- Function Manager List -->
+      <div class="function-manager" style="margin-top: 0.5rem;">
+        <h3 style="font-size: 1rem; font-weight: 600; color: var(--text-bright);">
+          <i class="fa-solid fa-gears" style="color: var(--accent-cyan); margin-right: 0.5rem;"></i>Gerenciador de Funções
+        </h3>
+        
+        <!-- Add Custom Function Form -->
+        <div class="edit-formula-group">
+          <input type="text" id="new-func-input" class="formula-input" placeholder="Nova Função. Ex: x^2 - 4">
+          <select id="new-func-color" class="btn" style="padding: 0.6rem; font-size: 0.9rem;" title="Cor da Função">
+            <option value="#00F2FE" style="color: #00F2FE; background: var(--bg-secondary);">Ciano</option>
+            <option value="#7F00FF" style="color: #7F00FF; background: var(--bg-secondary);">Roxo</option>
+            <option value="#10B981" style="color: #10B981; background: var(--bg-secondary);">Verde</option>
+            <option value="#EF4444" style="color: #EF4444; background: var(--bg-secondary);">Vermelho</option>
+            <option value="#F59E0B" style="color: #F59E0B; background: var(--bg-secondary);">Laranja</option>
+          </select>
+          <button id="btn-add-function" class="btn btn-primary" title="Adicionar ao gráfico">
+            <i class="fa-solid fa-plus"></i>
+          </button>
+        </div>
+
+        <!-- Function List Plotted -->
+        <div id="function-list-container" style="display: flex; flex-direction: column; gap: 0.5rem; max-height: 140px; overflow-y: auto;">
+          <!-- Items added dynamically -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- MODAL: SETTINGS -->
+  <div class="modal-overlay" id="modal-settings">
+    <div class="modal-container">
+      <div class="modal-header">
+        <h3 class="modal-title">Configurações da API</h3>
+        <button id="btn-close-settings" class="btn btn-icon-only" style="border: none; background: transparent; font-size: 1.2rem;">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Para habilitar o reconhecimento de escrita manual e resoluções completas com IA, é necessário inserir sua chave da API do Gemini.</p>
+        <p>Você pode obter uma chave de API **gratuita** acessando o <a href="https://aistudio.google.com/" target="_blank">Google AI Studio <i class="fa-solid fa-up-right-from-square"></i></a>.</p>
+        
+        <div class="form-group">
+          <label for="gemini-api-key">Chave de API do Gemini</label>
+          <div style="position: relative; display: flex; align-items: center;">
+            <input type="password" id="gemini-api-key" class="form-input" style="flex: 1; padding-right: 2.5rem;" placeholder="Insira seu API Key AI Studio">
+            <button id="btn-toggle-key-visibility" class="btn btn-icon-only" style="position: absolute; right: 4px; height: 32px; width: 32px; border: none; background: transparent;" title="Mostrar/Esconder Chave">
+              <i class="fa-solid fa-eye-slash" id="eye-icon"></i>
+            </button>
+          </div>
+        </div>
+        
+        <p style="font-size: 0.8rem; color: var(--warning);">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+          Importante: A chave é armazenada de forma 100% segura apenas no seu próprio navegador (localStorage) e as chamadas são feitas diretamente para os servidores do Google.
+        </p>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-cancel-settings" class="btn">Cancelar</button>
+        <button id="btn-save-settings" class="btn btn-primary">Salvar Chave</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: HELP / HOW TO USE -->
+  <div class="modal-overlay" id="modal-help">
+    <div class="modal-container" style="max-width: 550px;">
+      <div class="modal-header">
+        <h3 class="modal-title">Como Usar o Math Solver</h3>
+        <button id="btn-close-help" class="btn btn-icon-only" style="border: none; background: transparent; font-size: 1.2rem;">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+      <div class="modal-body" style="gap: 0.8rem;">
+        <h4 style="color: var(--accent-cyan); font-weight: 600;">1. Desenhar Expressões</h4>
+        <p>Use o mouse ou a tela de toque para desenhar uma equação ou gráfico no painel da esquerda. Você pode usar a borracha, ajustar o tamanho do pincel e desfazer (Undo) ou refazer (Redo) seus traços.</p>
+        
+        <h4 style="color: var(--accent-cyan); font-weight: 600;">2. Reconhecimento com IA</h4>
+        <p>Insira sua API Key (obtida de graça no Google AI Studio) no botão do topo. Desenhe algo na tela (ex: <code>x^2 - 4</code> ou <code>3x + 10 = 25</code>) e clique em **Reconhecer e Resolver**.</p>
+        
+        <h4 style="color: var(--accent-cyan); font-weight: 600;">3. Gráficos em Tempo Real</h4>
+        <p>O gráfico à direita exibirá as funções automaticamente se o desenho for reconhecido como uma função (ex: <code>y = sin(x)</code>). Você também pode adicionar ou remover funções manualmente usando o **Gerenciador de Funções** digitando a expressão direta (ex: <code>x^2</code>, <code>2 * x + 3</code>, <code>cos(x)</code>) e clicando em <b>+</b>.</p>
+        
+        <h4 style="color: var(--accent-cyan); font-weight: 600;">4. Ajustes Manuais</h4>
+        <p>Se o desenho não for lido corretamente, você pode editar a fórmula diretamente na caixa de edição do painel do meio e clicar no botão de calculadora para re-calcular!</p>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-ok-help" class="btn btn-primary">Entendido!</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <p>Criado com <i class="fa-solid fa-heart" style="color: var(--danger);"></i> para exploração matemática. Math Solver &copy; 2026.</p>
+  </footer>
+
+  <!-- App Main Javascript -->
+  <script src="app.js"></script>
+</body>
+</html>
