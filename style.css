@@ -431,15 +431,19 @@ input[type="range"]::-webkit-slider-thumb:hover {
   border: 1px solid rgba(16, 185, 129, 0.3);
   color: var(--success);
   box-shadow: var(--success-glow);
-  padding: 0.75rem;
+  padding: 0.75rem 1rem;
   border-radius: 8px;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: 600;
+  display: block;
+  font-weight: 500;
+  line-height: 1.6;
   overflow-x: auto;
   max-width: 100%;
+}
+.final-result-badge i {
+  margin-right: 0.5rem;
+}
+.final-result-badge strong {
+  font-weight: 600;
 }
 
 /* Graphing Container */

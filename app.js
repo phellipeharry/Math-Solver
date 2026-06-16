@@ -126,7 +126,40 @@ document.addEventListener('DOMContentLoaded', () => {
     let sanitized = latexStr;
     // Fix \left\frac or \left\sin and replace with \left(\frac or \left(\sin
     sanitized = sanitized.replace(/\\left\\(frac|dfrac|tfrac|sin|cos|tan|ln|log|exp)/g, '\\left(\\\$1');
+    // Auto-insert vertical spacing in line breaks \\ -> \\[0.5em]
+    sanitized = sanitized.replace(/\\\\(?!\s*\[)/g, '\\\\[0.5em]');
     return sanitized;
+  }
+
+  function renderMixedMath(text, element) {
+    if (!text) {
+      element.innerHTML = '';
+      return;
+    }
+    let sanitized = sanitizeLatex(text);
+    
+    // Se o texto não contiver delimitadores mas parecer matemática, envolvemos tudo em '$'
+    if (!sanitized.includes('$') && !sanitized.includes('\\(') && 
+        (sanitized.includes('\\') || sanitized.includes('=') || sanitized.includes('^') || sanitized.includes('_'))) {
+      sanitized = `$${sanitized}$`;
+    }
+    
+    element.innerHTML = sanitized;
+    if (window.renderMathInElement) {
+      try {
+        window.renderMathInElement(element, {
+          delimiters: [
+            { left: '$$', right: '$$', display: true },
+            { left: '$', right: '$', display: false },
+            { left: '\\(', right: '\\)', display: false },
+            { left: '\\[', right: '\\]', display: true }
+          ],
+          throwOnError: false
+        });
+      } catch (err) {
+        console.error("Erro no auto-render:", err);
+      }
+    }
   }
   
   // Graphing State
@@ -1068,14 +1101,7 @@ O seu retorno DEVE obedecer estritamente a este esquema JSON:
     // Render final result in KaTeX format to solve fractions \frac rendering
     if (data.result) {
       finalResultContainer.style.display = 'block';
-      try {
-        katex.render(sanitizeLatex(data.result), finalResultValue, {
-          throwOnError: false,
-          displayMode: false
-        });
-      } catch (err) {
-        finalResultValue.innerText = data.result;
-      }
+      renderMixedMath(data.result, finalResultValue);
     } else {
       finalResultContainer.style.display = 'none';
     }
@@ -1290,14 +1316,7 @@ O seu retorno DEVE obedecer estritamente a este esquema JSON:
         }
 
         finalResultContainer.style.display = 'block';
-        try {
-          katex.render(sanitizeLatex(resultStr), finalResultValue, {
-            throwOnError: false,
-            displayMode: false
-          });
-        } catch (err) {
-          finalResultValue.innerText = resultStr;
-        }
+        renderMixedMath(resultStr, finalResultValue);
 
         const localStep = {
           explanation: "Calculado localmente com Math.js (Sem passos detalhados). Adicione sua chave do Gemini para resoluções passo a passo completas.",
@@ -1447,7 +1466,7 @@ Seu retorno deve ser exclusivamente um objeto JSON estrito com o seguinte esquem
 - 'steps': Um array de objetos descrevendo as etapas da resolução. Cada objeto deve conter:
     * 'explanation': Explicação detalhada do raciocínio da etapa em português. Todo e qualquer texto em português, explicações teóricas e justificativas devem ficar APENAS neste campo 'explanation'.
     * 'formula': Apenas a fórmula matemática ou equação correspondente a esta etapa em formato LaTeX puro (sem delimitadores como $$ ou $). NUNCA insira textos por extenso, frases ou palavras em português (como 'como', 'para', 'logo', 'temos', 'ponto', etc.) dentro de 'formula'. Se a etapa não tiver uma fórmula matemática, retorne uma string vazia "".
-- 'result': String contendo apenas a resposta/resultado final simplificado formatado em LaTeX puro (ex: "x = \\frac{1}{3}" ou "33.5"). Deve ser curto e NÃO deve conter frases ou textos explicativos adicionais.
+- 'result': String resumindo a resposta/resultado final em português por extenso, envolvendo obrigatoriamente qualquer fórmula ou termo matemático nos delimitadores de cifrão '$' (Ex: 'Os pontos críticos são $x = 1$ e $x = \\frac{1}{3}$. Ponto de máximo local: $\\left(\\frac{1}{3}, \\frac{4}{27}\\right)$.').
 
 Seja didático e ajude o usuário a aprender como pensar.`
     });
@@ -1515,14 +1534,7 @@ Seja didático e ajude o usuário a aprender como pensar.`
     // Render final result in KaTeX format to solve formatting bugs
     if (data.result) {
       tutorResultContainer.style.display = 'block';
-      try {
-        katex.render(sanitizeLatex(data.result), tutorResultValue, {
-          throwOnError: false,
-          displayMode: false
-        });
-      } catch (err) {
-        tutorResultValue.innerText = data.result;
-      }
+      renderMixedMath(data.result, tutorResultValue);
     } else {
       tutorResultContainer.style.display = 'none';
     }
