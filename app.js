@@ -907,8 +907,10 @@ document.addEventListener('DOMContentLoaded', () => {
 O seu retorno DEVE obedecer estritamente a este esquema JSON:
 - 'expression': Texto limpo contendo a expressão correspondente (Ex: "y = x^2 - 4" ou "3x + 5 = 11").
 - 'latex': String formatada em LaTeX válida para renderização direta via KaTeX (NÃO inclua delimitadores externos como $$ ou \\[ \\]).
-- 'steps': Um array de objetos, onde cada objeto descreve um passo da resolução. Cada objeto deve conter: 'explanation' (explicação em português do que está sendo feito no passo) e 'formula' (a fórmula matemática resultante deste passo em formato LaTeX, sem os delimitadores $$ ou $).
-- 'result': String resumindo o resultado final (ex: "x = 2", "5" ou "Equação resolvida"). Deve estar no formato LaTeX.
+- 'steps': Um array de objetos, onde cada objeto descreve um passo da resolução. Cada objeto deve conter:
+    * 'explanation': Explicação em português do que está sendo feito neste passo. Todo e qualquer texto em português, explicações teóricas e justificativas devem ficar APENAS neste campo 'explanation'.
+    * 'formula': Apenas a fórmula matemática ou equação correspondente a esta etapa em formato LaTeX puro (sem delimitadores como $$ ou $). NUNCA insira textos por extenso, frases ou palavras em português (como 'como', 'para', 'logo', 'temos', 'ponto', etc.) dentro de 'formula'. Se a etapa não tiver uma fórmula matemática, retorne uma string vazia "".
+- 'result': String contendo apenas a resposta/resultado final simplificado formatado em LaTeX puro (ex: "x = \\frac{1}{3}" ou "5"). Deve ser extremamente curto e NÃO deve conter frases ou textos explicativos adicionais.
 - 'isFunction': Um booleano true/false informando se o termo se trata de uma função de x plotável no plano cartesiano (Ex: "y = x^2", "f(x) = sin(x)", "x^3").
 - 'plotFunction': String contendo apenas a fórmula simplificada em relação a x para plotagem matemática direta no javascript (Ex: se for "y = x^2 - 4" ou "f(x) = x^2 - 4", retorne apenas "x^2 - 4"). Se não for uma função plotável, retorne uma string vazia "".`
           },
@@ -982,8 +984,10 @@ O seu retorno DEVE obedecer estritamente a este esquema JSON:
 O seu retorno DEVE obedecer estritamente a este esquema JSON:
 - 'expression': Texto limpo contendo a expressão correspondente (Ex: "y = x^2 - 4" ou "3x + 5 = 11").
 - 'latex': String formatada em LaTeX válida para renderização direta via KaTeX (NÃO inclua delimitadores externos como $$ ou \\[ \\]).
-- 'steps': Um array de objetos, onde cada objeto descreve um passo da resolução. Cada objeto deve conter: 'explanation' (explicação em português do que está sendo feito no passo) e 'formula' (a fórmula matemática resultante deste passo em formato LaTeX, sem os delimitadores $$ ou $).
-- 'result': String resumindo o resultado final (ex: "x = 2", "5" ou "Equação resolvida"). Deve estar no formato LaTeX.
+- 'steps': Um array de objetos, onde cada objeto descreve um passo da resolução. Cada objeto deve conter:
+    * 'explanation': Explicação em português do que está sendo feito neste passo. Todo e qualquer texto em português, explicações teóricas e justificativas devem ficar APENAS neste campo 'explanation'.
+    * 'formula': Apenas a fórmula matemática ou equação correspondente a esta etapa em formato LaTeX puro (sem delimitadores como $$ ou $). NUNCA insira textos por extenso, frases ou palavras em português (como 'como', 'para', 'logo', 'temos', 'ponto', etc.) dentro de 'formula'. Se a etapa não tiver uma fórmula matemática, retorne uma string vazia "".
+- 'result': String contendo apenas a resposta/resultado final simplificado formatado em LaTeX puro (ex: "x = \\frac{1}{3}" ou "5"). Deve ser extremamente curto e NÃO deve conter frases ou textos explicativos adicionais.
 - 'isFunction': Um booleano true/false informando se o termo se trata de uma função de x plotável no plano cartesiano.
 - 'plotFunction': String contendo apenas a fórmula simplificada em relação a x para plotagem matemática direta no javascript (Ex: se for "y = x^2 - 4", retorne apenas "x^2 - 4"). Se não for uma função plotável, retorne uma string vazia "".`
           }
@@ -1408,8 +1412,10 @@ O seu retorno DEVE obedecer estritamente a este esquema JSON:
 Seu retorno deve ser exclusivamente um objeto JSON estrito com o seguinte esquema:
 - 'questionText': String contendo o enunciado transcrito completo da questão detectada (especialmente se for de imagem).
 - 'concept': String explicando detalhadamente em português 'Como Pensar' para resolver este tipo de problema, indicando a estratégia de raciocínio, o conceito fundamental e quais fórmulas/regras aplicar.
-- 'steps': Um array de objetos descrevendo as etapas da resolução. Cada objeto deve conter: 'explanation' (explicação detalhada do raciocínio da etapa em português) e 'formula' (a equação/cálculo matemático desta etapa em formato LaTeX, sem delimitadores como $$ ou $).
-- 'result': String contendo apenas a resposta/resultado final simplificado formatado em LaTeX.
+- 'steps': Um array de objetos descrevendo as etapas da resolução. Cada objeto deve conter:
+    * 'explanation': Explicação detalhada do raciocínio da etapa em português. Todo e qualquer texto em português, explicações teóricas e justificativas devem ficar APENAS neste campo 'explanation'.
+    * 'formula': Apenas a fórmula matemática ou equação correspondente a esta etapa em formato LaTeX puro (sem delimitadores como $$ ou $). NUNCA insira textos por extenso, frases ou palavras em português (como 'como', 'para', 'logo', 'temos', 'ponto', etc.) dentro de 'formula'. Se a etapa não tiver uma fórmula matemática, retorne uma string vazia "".
+- 'result': String contendo apenas a resposta/resultado final simplificado formatado em LaTeX puro (ex: "x = \\frac{1}{3}" ou "33.5"). Deve ser curto e NÃO deve conter frases ou textos explicativos adicionais.
 
 Seja didático e ajude o usuário a aprender como pensar.`
     });
