@@ -39,9 +39,22 @@
         <i class="fa-solid fa-square-root-variable"></i>
       </div>
       <div>
-        <h1 class="logo-title">Math Solver</h1>
+        <h1 class="logo-title">MathFlow</h1>
       </div>
     </div>
+    
+    <!-- Global Navigation Tabs -->
+    <div class="global-nav-tabs">
+      <button id="nav-calc" class="nav-tab active" title="Calculadora e Gráficos Cartesianos">
+        <i class="fa-solid fa-calculator"></i>
+        <span>Calculadora & Gráficos</span>
+      </button>
+      <button id="nav-tutor" class="nav-tab" title="Tutor de Questões Didático">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <span>Tutor de Questões</span>
+      </button>
+    </div>
+    
     <div class="nav-actions">
       <button id="btn-open-settings" class="btn" title="Configurar chave do Gemini">
         <i class="fa-solid fa-gear"></i>
@@ -54,53 +67,92 @@
     </div>
   </header>
 
-  <!-- Main Grid Layout -->
-  <main class="dashboard-grid">
+  <!-- SECTION 1: CALCULATOR & PLOTTER -->
+  <main class="dashboard-grid" id="section-calc">
     
-    <!-- PANEL 1: DRAWING CANVAS -->
+    <!-- PANEL 1: INPUT PANEL (DRAW CANVAS / UPLOAD PHOTO) -->
     <section class="panel-card" id="panel-drawing">
-      <div class="panel-header">
-        <h2 class="panel-title">
-          <i class="fa-solid fa-signature"></i>
-          <span>Desenho na Tela</span>
-        </h2>
-        <div class="toolbar-group">
+      <div class="panel-header" style="flex-direction: column; align-items: stretch; gap: 0.75rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+          <h2 class="panel-title">
+            <i class="fa-solid fa-signature"></i>
+            <span>Entrada de Matemática</span>
+          </h2>
           <button id="btn-expand-canvas" class="btn btn-icon-only" title="Expandir/Recolher Tela">
             <i class="fa-solid fa-expand" id="expand-icon"></i>
           </button>
-          <button id="btn-toggle-eraser" class="btn btn-icon-only" title="Alternar Borracha">
-            <i class="fa-solid fa-eraser"></i>
+        </div>
+        
+        <!-- Input Mode Switcher (Secondary Tabs) -->
+        <div class="input-mode-tabs">
+          <button id="tab-mode-draw" class="tab-mode active">
+            <i class="fa-solid fa-paint-brush"></i> Desenhar
+          </button>
+          <button id="tab-mode-upload" class="tab-mode">
+            <i class="fa-solid fa-camera"></i> Enviar Foto
           </button>
         </div>
       </div>
       
-      <div class="canvas-container" id="canvas-container">
-        <canvas id="drawing-canvas"></canvas>
+      <!-- Tab 1: Draw Mode Content -->
+      <div id="content-mode-draw" class="mode-content active">
+        <div class="canvas-container" id="canvas-container">
+          <canvas id="drawing-canvas"></canvas>
+        </div>
+        
+        <div class="canvas-toolbar">
+          <div class="toolbar-group">
+            <button id="btn-undo" class="btn btn-icon-only" title="Desfazer (Ctrl+Z)">
+              <i class="fa-solid fa-arrow-rotate-left"></i>
+            </button>
+            <button id="btn-redo" class="btn btn-icon-only" title="Refazer">
+              <i class="fa-solid fa-arrow-rotate-right"></i>
+            </button>
+            <button id="btn-toggle-eraser" class="btn btn-icon-only" title="Alternar Borracha">
+              <i class="fa-solid fa-eraser"></i>
+            </button>
+            <button id="btn-clear" class="btn btn-danger btn-icon-only" title="Limpar Tudo">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          </div>
+          
+          <div class="brush-size-control">
+            <i class="fa-solid fa-paint-brush"></i>
+            <input type="range" id="brush-size" min="2" max="20" value="4" title="Tamanho do Pincel">
+          </div>
+        </div>
+        
+        <button id="btn-recognize" class="btn btn-primary" style="width: 100%; justify-content: center; height: 48px; margin-top: 0.75rem;">
+          <i class="fa-solid fa-wand-magic-sparkles"></i>
+          <span>Reconhecer & Resolver Desenho</span>
+        </button>
       </div>
       
-      <div class="canvas-toolbar">
-        <div class="toolbar-group">
-          <button id="btn-undo" class="btn btn-icon-only" title="Desfazer">
-            <i class="fa-solid fa-arrow-rotate-left"></i>
+      <!-- Tab 2: Photo Upload Mode Content -->
+      <div id="content-mode-upload" class="mode-content">
+        <div class="upload-dropzone" id="upload-dropzone">
+          <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2.5rem; color: var(--accent-cyan);"></i>
+          <p>Arraste uma foto aqui ou</p>
+          <button class="btn btn-primary" id="btn-browse-file" style="margin-top: 0.5rem; font-size: 0.85rem; padding: 0.5rem 1rem;">
+            <i class="fa-solid fa-images"></i> Escolher Arquivo / Câmera
           </button>
-          <button id="btn-redo" class="btn btn-icon-only" title="Refazer">
-            <i class="fa-solid fa-arrow-rotate-right"></i>
-          </button>
-          <button id="btn-clear" class="btn btn-danger btn-icon-only" title="Limpar Tudo">
-            <i class="fa-solid fa-trash-can"></i>
+          <input type="file" id="file-input-ocr" accept="image/*" style="display: none;">
+          <span style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Suporta JPEG, PNG</span>
+        </div>
+        
+        <!-- Preview Area -->
+        <div class="upload-preview-container" id="upload-preview-container" style="display: none;">
+          <img id="image-preview-ocr" src="" alt="Preview da Foto">
+          <button id="btn-remove-preview" class="btn btn-danger btn-icon-only" title="Remover Imagem">
+            <i class="fa-solid fa-xmark"></i>
           </button>
         </div>
         
-        <div class="brush-size-control">
-          <i class="fa-solid fa-paint-brush"></i>
-          <input type="range" id="brush-size" min="2" max="20" value="4" title="Tamanho do Pincel">
-        </div>
+        <button id="btn-solve-image" class="btn btn-primary" style="width: 100%; justify-content: center; height: 48px; margin-top: 0.75rem;" disabled>
+          <i class="fa-solid fa-calculator"></i>
+          <span>Resolver Foto Enviada</span>
+        </button>
       </div>
-      
-      <button id="btn-recognize" class="btn btn-primary" style="margin-top: auto; justify-content: center; height: 48px;">
-        <i class="fa-solid fa-wand-magic-sparkles"></i>
-        <span>Reconhecer & Resolver</span>
-      </button>
     </section>
 
     <!-- PANEL 2: RECOGNITION & SOLUTION -->
@@ -116,7 +168,7 @@
       <div class="result-field">
         <div class="latex-display" id="latex-output">
           <span style="color: var(--text-muted); font-size: 0.95rem;">
-            A fórmula desenhada ou digitada aparecerá aqui.
+            A fórmula desenhada, enviada em foto ou digitada aparecerá aqui.
           </span>
         </div>
       </div>
@@ -148,7 +200,7 @@
       <div class="steps-container" id="steps-container">
         <div class="empty-state">
           <i class="fa-solid fa-arrow-left-long"></i>
-          <p>Desenhe algo e clique em Reconhecer para ver a resolução detalhada por IA.</p>
+          <p>Desenhe algo, envie uma foto ou use a calculadora para ver a resolução detalhada por IA.</p>
         </div>
       </div>
     </section>
@@ -220,6 +272,102 @@
 
   </main>
 
+  <!-- SECTION 2: QUESTION TUTOR (LEARNING HUB) -->
+  <main class="dashboard-grid" id="section-tutor" style="display: none; grid-template-columns: minmax(380px, 1fr) minmax(400px, 1.5fr);">
+    
+    <!-- TUTOR COLUMN 1: QUESTION INPUT -->
+    <section class="panel-card" id="panel-tutor-input">
+      <div class="panel-header">
+        <h2 class="panel-title">
+          <i class="fa-solid fa-graduation-cap"></i>
+          <span>Envio da Questão</span>
+        </h2>
+      </div>
+      
+      <!-- Text input for typing questions -->
+      <div class="form-group">
+        <label for="tutor-text-input">Digite o enunciado da questão</label>
+        <textarea id="tutor-text-input" class="formula-input" style="height: 150px; resize: vertical; line-height: 1.5; font-family: inherit; font-size: 0.95rem; padding: 0.75rem;" placeholder="Ex: Um pesquisador estuda a resistência de um certo material com variância 4. Foi extraída uma amostra: 7.9, 6.8, 5.4, 7.5, 7.9. Determine o intervalo de confiança de 90% para a média."></textarea>
+      </div>
+      
+      <div style="text-align: center; color: var(--text-muted); font-size: 0.85rem; margin: 0.4rem 0; font-weight: 600;">OU</div>
+      
+      <!-- Image input for uploading question photo -->
+      <div class="form-group">
+        <label>Envie a foto do exercício</label>
+        <div class="upload-dropzone" id="tutor-upload-dropzone">
+          <i class="fa-solid fa-camera" style="font-size: 2rem; color: var(--accent-purple);"></i>
+          <p>Arraste a foto da questão aqui ou</p>
+          <button class="btn" id="btn-tutor-browse-file" style="margin-top: 0.5rem; font-size: 0.85rem; padding: 0.5rem 1rem;">
+            <i class="fa-solid fa-images"></i> Tirar Foto / Arquivo
+          </button>
+          <input type="file" id="tutor-file-input" accept="image/*" style="display: none;">
+        </div>
+        
+        <!-- Tutor Preview -->
+        <div class="upload-preview-container" id="tutor-preview-container" style="display: none; margin-top: 0.75rem;">
+          <img id="tutor-image-preview" src="" alt="Preview da Questão">
+          <button id="btn-tutor-remove-preview" class="btn btn-danger btn-icon-only" title="Remover Imagem">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+      </div>
+      
+      <button id="btn-tutor-solve" class="btn btn-primary" style="margin-top: auto; justify-content: center; height: 48px;">
+        <i class="fa-solid fa-graduation-cap"></i>
+        <span>Explicar & Resolver Questão</span>
+      </button>
+    </section>
+
+    <!-- TUTOR COLUMN 2: TUTOR RESOLUTION & COACHING -->
+    <section class="panel-card" id="panel-tutor-solution">
+      <div class="panel-header">
+        <h2 class="panel-title">
+          <i class="fa-solid fa-chalkboard-user"></i>
+          <span>Tutor de Aprendizado</span>
+        </h2>
+      </div>
+
+      <!-- Question Text detected -->
+      <div class="tutor-transcription-container" id="tutor-transcription-container" style="display: none;">
+        <h4 style="font-size: 0.85rem; text-transform: uppercase; color: var(--accent-cyan); letter-spacing: 0.5px; margin-bottom: 0.25rem;">Texto Detectado</h4>
+        <div class="formula-input" id="tutor-detected-text" style="font-family: inherit; font-size: 0.9rem; line-height: 1.4; background: rgba(0,0,0,0.15); border: none; padding: 0.75rem; max-height: 100px; overflow-y: auto;"></div>
+      </div>
+
+      <!-- Concept Box: "Como Pensar" -->
+      <div class="tutor-concept-container" id="tutor-concept-container" style="display: none;">
+        <div class="tutor-concept-box" style="background: rgba(127, 0, 255, 0.05); border: 1px solid rgba(127, 0, 255, 0.2); padding: 1rem; border-radius: 12px;">
+          <div style="display: flex; align-items: center; gap: 0.5rem; color: #c084fc; margin-bottom: 0.5rem; font-weight: 600;">
+            <i class="fa-solid fa-lightbulb" style="font-size: 1.1rem; text-shadow: 0 0 10px rgba(127, 0, 255, 0.5);"></i>
+            <span>Como Pensar para Desenvolver esta Questão:</span>
+          </div>
+          <p id="tutor-concept-text" style="font-size: 0.95rem; line-height: 1.6; color: var(--text-main);"></p>
+        </div>
+      </div>
+
+      <!-- Tutor Final Result -->
+      <div id="tutor-result-container" style="display: none;">
+        <div class="final-result-badge" style="background: rgba(16, 185, 129, 0.12); border-color: rgba(16, 185, 129, 0.3); color: var(--success); box-shadow: var(--success-glow); padding: 1rem;">
+          <i class="fa-solid fa-square-check"></i>
+          <span>Resposta Final: <strong id="tutor-result-value" style="font-size: 1.15rem; margin-left: 0.5rem;"></strong></span>
+        </div>
+      </div>
+
+      <!-- Step-by-step flowchart list -->
+      <h3 id="tutor-steps-title" style="font-size: 1rem; font-weight: 600; margin-top: 0.5rem; color: var(--text-bright); display: none;">
+        <i class="fa-solid fa-route" style="color: var(--accent-cyan); margin-right: 0.5rem;"></i>Caminho da Resolução
+      </h3>
+      
+      <div class="steps-container" id="tutor-steps-container">
+        <div class="empty-state">
+          <i class="fa-solid fa-graduation-cap"></i>
+          <p>Envie uma foto do exercício ou digite o enunciado da questão para receber explicações de como pensar e resolver passo a passo.</p>
+        </div>
+      </div>
+    </section>
+    
+  </main>
+
   <!-- MODAL: SETTINGS -->
   <div class="modal-overlay" id="modal-settings">
     <div class="modal-container">
@@ -259,23 +407,23 @@
   <div class="modal-overlay" id="modal-help">
     <div class="modal-container" style="max-width: 550px;">
       <div class="modal-header">
-        <h3 class="modal-title">Como Usar o Math Solver</h3>
+        <h3 class="modal-title">Como Usar o MathFlow</h3>
         <button id="btn-close-help" class="btn btn-icon-only" style="border: none; background: transparent; font-size: 1.2rem;">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
       <div class="modal-body" style="gap: 0.8rem;">
-        <h4 style="color: var(--accent-cyan); font-weight: 600;">1. Desenhar Expressões</h4>
-        <p>Use o mouse ou a tela de toque para desenhar uma equação ou gráfico no painel da esquerda. Você pode usar a borracha, ajustar o tamanho do pincel e desfazer (Undo) ou refazer (Redo) seus traços.</p>
+        <h4 style="color: var(--accent-cyan); font-weight: 600;">1. Desenhar ou Enviar Foto</h4>
+        <p>Na aba **Calculadora & Gráficos**, você pode desenhar equações à mão no rascunho (com suporte a toque/zoom) ou enviar fotos de contas de matemática. A IA irá reconhecer e desenhar o gráfico da função automaticamente!</p>
         
-        <h4 style="color: var(--accent-cyan); font-weight: 600;">2. Reconhecimento com IA</h4>
-        <p>Insira sua API Key (obtida de graça no Google AI Studio) no botão do topo. Desenhe algo na tela (ex: <code>x^2 - 4</code> ou <code>3x + 10 = 25</code>) e clique em **Reconhecer e Resolver**.</p>
+        <h4 style="color: var(--accent-cyan); font-weight: 600;">2. Tutor de Questões Didático</h4>
+        <p>Use a aba **Tutor de Questões** para colar enunciados de exercícios complexos (como estatística, álgebra, problemas lógicos) ou tirar foto direta de uma folha de exercícios. A IA trará a estratégia de raciocínio "Como Pensar" e resolverá a questão de forma clara com gráficos/ LaTeX.</p>
         
         <h4 style="color: var(--accent-cyan); font-weight: 600;">3. Gráficos em Tempo Real</h4>
-        <p>O gráfico à direita exibirá as funções automaticamente se o desenho for reconhecido como uma função (ex: <code>y = sin(x)</code>). Você também pode adicionar ou remover funções manualmente usando o **Gerenciador de Funções** digitando a expressão direta (ex: <code>x^2</code>, <code>2 * x + 3</code>, <code>cos(x)</code>) e clicando em <b>+</b>.</p>
+        <p>Visualize as funções no **Plano Cartesiano** bidimensional. Dê zoom com a roda do mouse, arraste o plano e configure eixos de forma 100% interativa.</p>
         
-        <h4 style="color: var(--accent-cyan); font-weight: 600;">4. Ajustes Manuais</h4>
-        <p>Se o desenho não for lido corretamente, você pode editar a fórmula diretamente na caixa de edição do painel do meio e clicar no botão de calculadora para re-calcular!</p>
+        <h4 style="color: var(--accent-cyan); font-weight: 600;">4. API Key</h4>
+        <p>Cadastre sua chave da API do Gemini obtida de graça no AI Studio do Google no botão **API Key** do topo para usufruir de todas as capacidades visuais e explicativas da inteligência artificial.</p>
       </div>
       <div class="modal-footer">
         <button id="btn-ok-help" class="btn btn-primary">Entendido!</button>
@@ -285,7 +433,7 @@
 
   <!-- Footer -->
   <footer>
-    <p>Criado com <i class="fa-solid fa-heart" style="color: var(--danger);"></i> para exploração matemática. Math Solver &copy; 2026.</p>
+    <p>Criado com <i class="fa-solid fa-heart" style="color: var(--danger);"></i> para exploração matemática. MathFlow &copy; 2026.</p>
   </footer>
 
   <!-- App Main Javascript -->
