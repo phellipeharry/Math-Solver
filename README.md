@@ -1,6 +1,6 @@
-# MathFlow - Solucionador de Matemática & Plotador de Gráficos
+# Math Solver - Solucionador de Matemática & Plotador de Gráficos
 
-O **MathFlow** é uma aplicação web interativa premium de página única (SPA) desenvolvida para estudantes, engenheiros e entusiastas de matemática. Ele permite desenhar fórmulas matemáticas na tela, reconhecê-las usando Inteligência Artificial (Gemini 2.5 Flash), visualizar a resolução explicada passo a passo e plotar gráficos automaticamente em um plano cartesiano interativo 2D.
+O **Math Solver** é uma aplicação web interativa premium de página única (SPA) desenvolvida para estudantes, engenheiros e entusiastas de matemática. Ele permite desenhar fórmulas matemáticas na tela, reconhecê-las usando Inteligência Artificial (Gemini 2.5 Flash), visualizar a resolução explicada passo a passo e plotar gráficos automaticamente em um plano cartesiano interativo 2D.
 
 ---
 
@@ -46,4 +46,4 @@ Para habilitar o reconhecimento de escrita manual e resoluções completas:
 2. Faça login com sua conta do Google.
 3. Clique em **"Get API Key"** no menu lateral esquerdo.
 4. Clique em **"Create API Key"** e copie a chave gerada.
-5. No MathFlow, clique no botão **"API Key"** no topo da tela, cole a chave e clique em **Salvar**. A chave ficará salva com segurança apenas no armazenamento local (`localStorage`) do seu próprio navegador.
+5. No Math Solver, clique no botão **"API Key"** no topo da tela, cole a chave e clique em **Salvar**. A chave ficará salva com segurança apenas no armazenamento local (`localStorage`) do seu próprio navegador.

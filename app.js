@@ -1,5 +1,5 @@
 /**
- * MathFlow - Core Application Logic
+ * Math Solver - Core Application Logic
  * Canvas Drawing, Gemini API client-side OCR, KaTeX rendering, Math.js & Function Plot integration.
  */
 
