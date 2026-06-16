@@ -354,8 +354,7 @@ input[type="range"]::-webkit-slider-thumb:hover {
   font-size: 1.3rem;
   overflow-x: auto;
   padding: 0.5rem 0;
-  display: flex;
-  justify-content: center;
+  text-align: center;
   color: var(--text-bright);
 }
 
@@ -536,11 +535,9 @@ input[type="range"]::-webkit-slider-thumb:hover {
   box-shadow: 0 4px 12px rgba(0, 242, 254, 0.05);
   border-radius: 8px;
   padding: 0.75rem 1rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
   min-height: 50px;
   overflow-x: auto;
+  text-align: center;
   transition: all 0.3s ease;
 }
 .step-formula-box:hover {
