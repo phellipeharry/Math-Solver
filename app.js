@@ -117,6 +117,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
   let apiKeyValue = localStorage.getItem('gemini_api_key') || '';
   
+  function sanitizeLatex(latexStr) {
+    if (!latexStr) return '';
+    let sanitized = latexStr;
+    // Fix \left\frac or \left\sin and replace with \left(\frac or \left(\sin
+    sanitized = sanitized.replace(/\\left\\(frac|dfrac|tfrac|sin|cos|tan|ln|log|exp)/g, '\\left(\\\$1');
+    return sanitized;
+  }
+  
   // Graphing State
   let functions = [
     { id: '1', expr: 'x^2 - 4', color: '#00F2FE', visible: true }
@@ -643,7 +651,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
     try {
-      katex.render(latexString, latexOutput, {
+      katex.render(sanitizeLatex(latexString), latexOutput, {
         throwOnError: false,
         displayMode: true
       });
@@ -1047,7 +1055,7 @@ O seu retorno DEVE obedecer estritamente a este esquema JSON:
     if (data.result) {
       finalResultContainer.style.display = 'block';
       try {
-        katex.render(data.result, finalResultValue, {
+        katex.render(sanitizeLatex(data.result), finalResultValue, {
           throwOnError: false,
           displayMode: false
         });
@@ -1082,7 +1090,7 @@ O seu retorno DEVE obedecer estritamente a este esquema JSON:
         if (step.formula) {
           const formulaRenderEl = stepCard.querySelector('.step-formula-render');
           try {
-            katex.render(step.formula, formulaRenderEl, {
+            katex.render(sanitizeLatex(step.formula), formulaRenderEl, {
               throwOnError: false,
               displayMode: true
             });
@@ -1269,7 +1277,7 @@ O seu retorno DEVE obedecer estritamente a este esquema JSON:
 
         finalResultContainer.style.display = 'block';
         try {
-          katex.render(resultStr, finalResultValue, {
+          katex.render(sanitizeLatex(resultStr), finalResultValue, {
             throwOnError: false,
             displayMode: false
           });
@@ -1298,7 +1306,7 @@ O seu retorno DEVE obedecer estritamente a este esquema JSON:
 
         const formulaRenderEl = stepCard.querySelector('.step-formula-render');
         try {
-          katex.render(localStep.formula, formulaRenderEl, {
+          katex.render(sanitizeLatex(localStep.formula), formulaRenderEl, {
             throwOnError: false,
             displayMode: true
           });
@@ -1484,7 +1492,7 @@ Seja didático e ajude o usuário a aprender como pensar.`
     if (data.result) {
       tutorResultContainer.style.display = 'block';
       try {
-        katex.render(data.result, tutorResultValue, {
+        katex.render(sanitizeLatex(data.result), tutorResultValue, {
           throwOnError: false,
           displayMode: false
         });
@@ -1520,7 +1528,7 @@ Seja didático e ajude o usuário a aprender como pensar.`
         if (step.formula) {
           const formulaRenderEl = stepCard.querySelector('.step-formula-render');
           try {
-            katex.render(step.formula, formulaRenderEl, {
+            katex.render(sanitizeLatex(step.formula), formulaRenderEl, {
               throwOnError: false,
               displayMode: true
             });
