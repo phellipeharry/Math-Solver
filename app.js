@@ -32,7 +32,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // Image Upload elements (Calculator)
   const uploadDropzone = document.getElementById('upload-dropzone');
   const btnBrowseFile = document.getElementById('btn-browse-file');
+  const btnCaptureCamera = document.getElementById('btn-capture-camera');
   const fileInputOcr = document.getElementById('file-input-ocr');
+  const fileInputCamera = document.getElementById('file-input-camera');
   const uploadPreviewContainer = document.getElementById('upload-preview-container');
   const imagePreviewOcr = document.getElementById('image-preview-ocr');
   const btnRemovePreview = document.getElementById('btn-remove-preview');
@@ -62,7 +64,9 @@ document.addEventListener('DOMContentLoaded', () => {
   const tutorTextInput = document.getElementById('tutor-text-input');
   const tutorUploadDropzone = document.getElementById('tutor-upload-dropzone');
   const btnTutorBrowseFile = document.getElementById('btn-tutor-browse-file');
+  const btnTutorCaptureCamera = document.getElementById('btn-tutor-capture-camera');
   const tutorFileInput = document.getElementById('tutor-file-input');
+  const tutorCameraInput = document.getElementById('tutor-camera-input');
   const tutorPreviewContainer = document.getElementById('tutor-preview-container');
   const tutorImagePreview = document.getElementById('tutor-image-preview');
   const btnTutorRemovePreview = document.getElementById('btn-tutor-remove-preview');
@@ -619,12 +623,22 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
+  if (btnCaptureCamera && fileInputCamera) {
+    btnCaptureCamera.addEventListener('click', () => fileInputCamera.click());
+    fileInputCamera.addEventListener('change', () => {
+      if (fileInputCamera.files.length > 0) {
+        handleImageSelected(fileInputCamera.files[0]);
+      }
+    });
+  }
+
   btnRemovePreview.addEventListener('click', () => {
     imagePreviewOcr.src = '';
     uploadPreviewContainer.style.display = 'none';
     uploadDropzone.style.display = 'flex';
     btnSolveImage.disabled = true;
     fileInputOcr.value = '';
+    if (fileInputCamera) fileInputCamera.value = '';
   });
 
   uploadDropzone.addEventListener('dragover', (e) => {
@@ -1363,12 +1377,22 @@ O seu retorno DEVE obedecer estritamente a este esquema JSON:
     }
   });
 
+  if (btnTutorCaptureCamera && tutorCameraInput) {
+    btnTutorCaptureCamera.addEventListener('click', () => tutorCameraInput.click());
+    tutorCameraInput.addEventListener('change', () => {
+      if (tutorCameraInput.files.length > 0) {
+        handleTutorImageSelected(tutorCameraInput.files[0]);
+      }
+    });
+  }
+
   btnTutorRemovePreview.addEventListener('click', () => {
     tutorImagePreview.src = '';
     tutorPreviewContainer.style.display = 'none';
     tutorUploadDropzone.style.display = 'flex';
     tutorImageBase64 = null;
     tutorFileInput.value = '';
+    if (tutorCameraInput) tutorCameraInput.value = '';
   });
 
   tutorUploadDropzone.addEventListener('dragover', (e) => {

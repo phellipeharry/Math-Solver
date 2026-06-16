@@ -133,10 +133,16 @@
         <div class="upload-dropzone" id="upload-dropzone">
           <i class="fa-solid fa-cloud-arrow-up" style="font-size: 2.5rem; color: var(--accent-cyan);"></i>
           <p>Arraste uma foto aqui ou</p>
-          <button class="btn btn-primary" id="btn-browse-file" style="margin-top: 0.5rem; font-size: 0.85rem; padding: 0.5rem 1rem;">
-            <i class="fa-solid fa-images"></i> Escolher Arquivo / Câmera
-          </button>
+          <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap; justify-content: center;">
+            <button class="btn btn-primary" id="btn-browse-file" type="button" style="font-size: 0.85rem; padding: 0.5rem 0.85rem;">
+              <i class="fa-solid fa-images"></i> Galeria
+            </button>
+            <button class="btn btn-primary" id="btn-capture-camera" type="button" style="font-size: 0.85rem; padding: 0.5rem 0.85rem;">
+              <i class="fa-solid fa-camera"></i> Câmera
+            </button>
+          </div>
           <input type="file" id="file-input-ocr" accept="image/*" style="display: none;">
+          <input type="file" id="file-input-camera" accept="image/*" capture="environment" style="display: none;">
           <span style="font-size: 0.75rem; color: var(--text-muted); margin-top: 0.5rem;">Suporta JPEG, PNG</span>
         </div>
         
@@ -273,7 +279,7 @@
   </main>
 
   <!-- SECTION 2: QUESTION TUTOR (LEARNING HUB) -->
-  <main class="dashboard-grid" id="section-tutor" style="display: none; grid-template-columns: minmax(380px, 1fr) minmax(400px, 1.5fr);">
+  <main class="dashboard-grid" id="section-tutor" style="display: none;">
     
     <!-- TUTOR COLUMN 1: QUESTION INPUT -->
     <section class="panel-card" id="panel-tutor-input">
@@ -298,10 +304,16 @@
         <div class="upload-dropzone" id="tutor-upload-dropzone">
           <i class="fa-solid fa-camera" style="font-size: 2rem; color: var(--accent-purple);"></i>
           <p>Arraste a foto da questão aqui ou</p>
-          <button class="btn" id="btn-tutor-browse-file" style="margin-top: 0.5rem; font-size: 0.85rem; padding: 0.5rem 1rem;">
-            <i class="fa-solid fa-images"></i> Tirar Foto / Arquivo
-          </button>
+          <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap; justify-content: center;">
+            <button class="btn" id="btn-tutor-browse-file" type="button" style="font-size: 0.85rem; padding: 0.5rem 0.85rem;">
+              <i class="fa-solid fa-images"></i> Galeria
+            </button>
+            <button class="btn" id="btn-tutor-capture-camera" type="button" style="font-size: 0.85rem; padding: 0.5rem 0.85rem;">
+              <i class="fa-solid fa-camera"></i> Câmera
+            </button>
+          </div>
           <input type="file" id="tutor-file-input" accept="image/*" style="display: none;">
+          <input type="file" id="tutor-camera-input" accept="image/*" capture="environment" style="display: none;">
         </div>
         
         <!-- Tutor Preview -->

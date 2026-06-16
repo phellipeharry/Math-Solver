@@ -1110,4 +1110,16 @@ footer a:hover {
   50% { transform: rotate(-90deg) translateY(5px); opacity: 1; }
 }
 
+/* Question Tutor Dashboard Grid Responsiveness */
+#section-tutor.dashboard-grid {
+  grid-template-columns: minmax(380px, 1fr) minmax(400px, 1.5fr);
+}
+
+@media (max-width: 1024px) {
+  #section-tutor.dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
 
